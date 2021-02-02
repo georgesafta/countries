@@ -7,6 +7,7 @@ type Country struct {
 	TopLevelDomain    []string          `json:"topLevelDomain,omitempty"`
 	Alpha2Code        string            `json:"alpha2Code,omitEmpty"`
 	Alpha3Code        string            `json:"alpha3Code,omitempty"`
+	CallingCodes      []string          `json:"callingCodes,omitempty"`
 	AltSpellings      []string          `json:"altSpelling,omitempty"`
 	Region            string            `json:"region,omitempty"`
 	Subregion         string            `json:"subregion,omitempty"`
