@@ -26,14 +26,7 @@ func ByName(name string, fields ...string) ([]Country, error) {
 		return nil, err
 	}
 
-	var c []Country
-	err = json.Unmarshal(data, &c)
-	if err != nil {
-		log.Println("Error deserializing data", err)
-		return nil, err
-	}
-
-	return c, nil
+	return unmarshal(data)
 }
 
 // ByFullName calls the country API filtered by country full name.
@@ -45,14 +38,7 @@ func ByFullName(name string, fields ...string) ([]Country, error) {
 		return nil, err
 	}
 
-	var c []Country
-	err = json.Unmarshal(data, &c)
-	if err != nil {
-		log.Println("Error deserializing data", err)
-		return nil, err
-	}
-
-	return c, nil
+	return unmarshal(data)
 }
 
 // ByCode calls the country API filtered by country ISO 3166 code.
@@ -64,14 +50,7 @@ func ByCode(code string, fields ...string) ([]Country, error) {
 		return nil, err
 	}
 
-	var c []Country
-	err = json.Unmarshal(data, &c)
-	if err != nil {
-		log.Println("Error deserializing data", err)
-		return nil, err
-	}
-
-	return c, nil
+	return unmarshal(data)
 }
 
 // ByCodes calls the country API filtered by country ISO 3166 codes.
@@ -88,147 +67,91 @@ func ByCodes(codes []string, fields ...string) ([]Country, error) {
 		return nil, err
 	}
 
-	var c []Country
-	err = json.Unmarshal(data, &c)
-	if err != nil {
-		log.Println("Error deserializing data", err)
-		return nil, err
-	}
-
-	return c, nil
+	return unmarshal(data)
 }
 
 // ByCapital calls the country API filtered by capital city name.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
 func ByCapital(name string, fields ...string) ([]Country, error) {
-	resData, err := get(fmt.Sprintf("capital/%s%s", name, filter(queryDelimiter, fieldsFilter, fields...)))
+	data, err := get(fmt.Sprintf("capital/%s%s", name, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
 
-	var c []Country
-	err = json.Unmarshal(resData, &c)
-	if err != nil {
-		log.Println("Error deserializing data", err)
-		return nil, err
-	}
-
-	return c, nil
+	return unmarshal(data)
 }
 
 // All retrieves all the countries by calling the country API.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
 func All(fields ...string) ([]Country, error) {
-	resData, err := get(fmt.Sprintf("all%s", filter(queryDelimiter, fieldsFilter, fields...)))
+	data, err := get(fmt.Sprintf("all%s", filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
 
-	var c []Country
-	err = json.Unmarshal(resData, &c)
-	if err != nil {
-		log.Println("Error deserializing data", err)
-		return nil, err
-	}
-
-	return c, nil
+	return unmarshal(data)
 }
 
 // ByCurrency calls the country API filtered by ISO 4217 currency code.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
 func ByCurrency(currency string, fields ...string) ([]Country, error) {
-	resData, err := get(fmt.Sprintf("currency/%s%s", currency, filter(queryDelimiter, fieldsFilter, fields...)))
+	data, err := get(fmt.Sprintf("currency/%s%s", currency, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
 
-	var c []Country
-	err = json.Unmarshal(resData, &c)
-	if err != nil {
-		log.Println("Error deserializing data", err)
-		return nil, err
-	}
-
-	return c, nil
+	return unmarshal(data)
 }
 
 // ByLanguage calls the country API filtered by ISO 639-1 language code.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
 func ByLanguage(language string, fields ...string) ([]Country, error) {
-	resData, err := get(fmt.Sprintf("lang/%s%s", language, filter(queryDelimiter, fieldsFilter, fields...)))
+	data, err := get(fmt.Sprintf("lang/%s%s", language, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
 
-	var c []Country
-	err = json.Unmarshal(resData, &c)
-	if err != nil {
-		log.Println("Error deserializing data", err)
-		return nil, err
-	}
-
-	return c, nil
+	return unmarshal(data)
 }
 
 // ByCallingCode calls the country API filtered by calling code.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
 func ByCallingCode(callingCode string, fields ...string) ([]Country, error) {
-	resData, err := get(fmt.Sprintf("callingcode/%s%s", callingCode, filter(queryDelimiter, fieldsFilter, fields...)))
+	data, err := get(fmt.Sprintf("callingcode/%s%s", callingCode, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
 
-	var c []Country
-	err = json.Unmarshal(resData, &c)
-	if err != nil {
-		log.Println("Error deserializing data", err)
-		return nil, err
-	}
-
-	return c, nil
+	return unmarshal(data)
 }
 
 // ByRegion calls the country API filtered by region.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
 func ByRegion(region string, fields ...string) ([]Country, error) {
-	resData, err := get(fmt.Sprintf("region/%s%s", region, filter(queryDelimiter, fieldsFilter, fields...)))
+	data, err := get(fmt.Sprintf("region/%s%s", region, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
 
-	var c []Country
-	err = json.Unmarshal(resData, &c)
-	if err != nil {
-		log.Println("Error deserializing data", err)
-		return nil, err
-	}
-
-	return c, nil
+	return unmarshal(data)
 }
 
 // ByRegionalBloc calls the country API filtered by regional bloc.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
 func ByRegionalBloc(regionalBloc string, fields ...string) ([]Country, error) {
-	resData, err := get(fmt.Sprintf("regionalbloc/%s%s", regionalBloc, filter(queryDelimiter, fieldsFilter, fields...)))
+	data, err := get(fmt.Sprintf("regionalbloc/%s%s", regionalBloc, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
 
-	var c []Country
-	err = json.Unmarshal(resData, &c)
-	if err != nil {
-		log.Println("Error deserializing data", err)
-		return nil, err
-	}
-
-	return c, nil
+	return unmarshal(data)
 }
 
 func get(endpoint string) ([]byte, error) {
@@ -272,4 +195,15 @@ func filter(prefix, fieldName string, fields ...string) string {
 	}
 
 	return sb.String()
+}
+
+func unmarshal(data []byte) ([]Country, error) {
+	var c []Country
+	err := json.Unmarshal(data, &c)
+	if err != nil {
+		log.Println("Error deserializing data", err)
+		return nil, err
+	}
+
+	return c, nil
 }
