@@ -9,19 +9,34 @@ import (
 	"strings"
 )
 
+// BaseURL is the base url of the countries API, use it when initialising the client.
 const (
-	baseURL        = "https://restcountries.eu/rest/v2/%s"
+	BaseURL        = "https://restcountries.eu/rest/v2"
 	queryDelimiter = "?"
 	and            = "&"
 	fieldsFilter   = "fields"
 	codesFilter    = "codes"
 )
 
+// HTTPClient is a wrapper over http.Client.
+type HTTPClient struct {
+	Client  *http.Client
+	baseURL string
+}
+
+// NewHTTPClient returns a new HTTPClient.
+func NewHTTPClient(baseURL string) *HTTPClient {
+	return &HTTPClient{
+		Client:  &http.Client{},
+		baseURL: baseURL,
+	}
+}
+
 // ByName calls the country API filtered by country partial name or native name.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
-func ByName(name string, fields ...string) ([]Country, error) {
-	data, err := get(fmt.Sprintf("name/%s%s", name, filter(queryDelimiter, fieldsFilter, fields...)))
+func (c *HTTPClient) ByName(name string, fields ...string) ([]Country, error) {
+	data, err := c.get(fmt.Sprintf("/name/%s%s", name, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
@@ -32,8 +47,8 @@ func ByName(name string, fields ...string) ([]Country, error) {
 // ByFullName calls the country API filtered by country full name.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
-func ByFullName(name string, fields ...string) ([]Country, error) {
-	data, err := get(fmt.Sprintf("name/%s?fullText=true%s", name, filter(and, fieldsFilter, fields...)))
+func (c *HTTPClient) ByFullName(name string, fields ...string) ([]Country, error) {
+	data, err := c.get(fmt.Sprintf("/name/%s?fullText=true%s", name, filter(and, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
@@ -44,8 +59,8 @@ func ByFullName(name string, fields ...string) ([]Country, error) {
 // ByCode calls the country API filtered by country ISO 3166 code.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
-func ByCode(code string, fields ...string) ([]Country, error) {
-	data, err := get(fmt.Sprintf("alpha/%s%s", code, filter(queryDelimiter, fieldsFilter, fields...)))
+func (c *HTTPClient) ByCode(code string, fields ...string) ([]Country, error) {
+	data, err := c.get(fmt.Sprintf("/alpha/%s%s", code, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
@@ -56,13 +71,13 @@ func ByCode(code string, fields ...string) ([]Country, error) {
 // ByCodes calls the country API filtered by country ISO 3166 codes.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
-func ByCodes(codes []string, fields ...string) ([]Country, error) {
+func (c *HTTPClient) ByCodes(codes []string, fields ...string) ([]Country, error) {
 	if len(codes) == 0 {
 		e := fmt.Errorf("Empty list of codes")
 		log.Println(e)
 		return nil, e
 	}
-	data, err := get(fmt.Sprintf("alpha%s%s", filter(queryDelimiter, codesFilter, codes...), filter(and, fieldsFilter, fields...)))
+	data, err := c.get(fmt.Sprintf("/alpha%s%s", filter(queryDelimiter, codesFilter, codes...), filter(and, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +88,8 @@ func ByCodes(codes []string, fields ...string) ([]Country, error) {
 // ByCapital calls the country API filtered by capital city name.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
-func ByCapital(name string, fields ...string) ([]Country, error) {
-	data, err := get(fmt.Sprintf("capital/%s%s", name, filter(queryDelimiter, fieldsFilter, fields...)))
+func (c *HTTPClient) ByCapital(name string, fields ...string) ([]Country, error) {
+	data, err := c.get(fmt.Sprintf("/capital/%s%s", name, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
@@ -85,8 +100,8 @@ func ByCapital(name string, fields ...string) ([]Country, error) {
 // All retrieves all the countries by calling the country API.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
-func All(fields ...string) ([]Country, error) {
-	data, err := get(fmt.Sprintf("all%s", filter(queryDelimiter, fieldsFilter, fields...)))
+func (c *HTTPClient) All(fields ...string) ([]Country, error) {
+	data, err := c.get(fmt.Sprintf("/all%s", filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
@@ -97,8 +112,8 @@ func All(fields ...string) ([]Country, error) {
 // ByCurrency calls the country API filtered by ISO 4217 currency code.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
-func ByCurrency(currency string, fields ...string) ([]Country, error) {
-	data, err := get(fmt.Sprintf("currency/%s%s", currency, filter(queryDelimiter, fieldsFilter, fields...)))
+func (c *HTTPClient) ByCurrency(currency string, fields ...string) ([]Country, error) {
+	data, err := c.get(fmt.Sprintf("/currency/%s%s", currency, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
@@ -109,8 +124,8 @@ func ByCurrency(currency string, fields ...string) ([]Country, error) {
 // ByLanguage calls the country API filtered by ISO 639-1 language code.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
-func ByLanguage(language string, fields ...string) ([]Country, error) {
-	data, err := get(fmt.Sprintf("lang/%s%s", language, filter(queryDelimiter, fieldsFilter, fields...)))
+func (c *HTTPClient) ByLanguage(language string, fields ...string) ([]Country, error) {
+	data, err := c.get(fmt.Sprintf("/lang/%s%s", language, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
@@ -121,8 +136,8 @@ func ByLanguage(language string, fields ...string) ([]Country, error) {
 // ByCallingCode calls the country API filtered by calling code.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
-func ByCallingCode(callingCode string, fields ...string) ([]Country, error) {
-	data, err := get(fmt.Sprintf("callingcode/%s%s", callingCode, filter(queryDelimiter, fieldsFilter, fields...)))
+func (c *HTTPClient) ByCallingCode(callingCode string, fields ...string) ([]Country, error) {
+	data, err := c.get(fmt.Sprintf("/callingcode/%s%s", callingCode, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
@@ -133,8 +148,8 @@ func ByCallingCode(callingCode string, fields ...string) ([]Country, error) {
 // ByRegion calls the country API filtered by region.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
-func ByRegion(region string, fields ...string) ([]Country, error) {
-	data, err := get(fmt.Sprintf("region/%s%s", region, filter(queryDelimiter, fieldsFilter, fields...)))
+func (c *HTTPClient) ByRegion(region string, fields ...string) ([]Country, error) {
+	data, err := c.get(fmt.Sprintf("/region/%s%s", region, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
@@ -145,8 +160,8 @@ func ByRegion(region string, fields ...string) ([]Country, error) {
 // ByRegionalBloc calls the country API filtered by regional bloc.
 // Optionally, we can filter the fields by name.
 // Returns the list of countries matching the filters.
-func ByRegionalBloc(regionalBloc string, fields ...string) ([]Country, error) {
-	data, err := get(fmt.Sprintf("regionalbloc/%s%s", regionalBloc, filter(queryDelimiter, fieldsFilter, fields...)))
+func (c *HTTPClient) ByRegionalBloc(regionalBloc string, fields ...string) ([]Country, error) {
+	data, err := c.get(fmt.Sprintf("/regionalbloc/%s%s", regionalBloc, filter(queryDelimiter, fieldsFilter, fields...)))
 	if err != nil {
 		return nil, err
 	}
@@ -154,8 +169,8 @@ func ByRegionalBloc(regionalBloc string, fields ...string) ([]Country, error) {
 	return unmarshal(data)
 }
 
-func get(endpoint string) ([]byte, error) {
-	url := fmt.Sprintf(baseURL, endpoint)
+func (c *HTTPClient) get(endpoint string) ([]byte, error) {
+	url := fmt.Sprintf(c.baseURL+"%s", endpoint)
 	res, err := http.Get(url)
 	if err != nil {
 		log.Println("Error calling the API", err)

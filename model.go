@@ -8,15 +8,15 @@ type Country struct {
 	Alpha2Code        string            `json:"alpha2Code,omitEmpty"`
 	Alpha3Code        string            `json:"alpha3Code,omitempty"`
 	CallingCodes      []string          `json:"callingCodes,omitempty"`
-	AltSpellings      []string          `json:"altSpelling,omitempty"`
+	AltSpellings      []string          `json:"altSpellings,omitempty"`
 	Region            string            `json:"region,omitempty"`
 	Subregion         string            `json:"subregion,omitempty"`
 	Population        int32             `json:"population"`
 	LatitudeLongitude []float32         `json:"latlng,omitempty"`
-	Demonym           string            `json:"denonym,omitempty"`
+	Demonym           string            `json:"demonym,omitempty"`
 	Area              float32           `json:"area,omitempty"`
 	Gini              float32           `json:"gini,omitempty"`
-	Timezones         []string          `json:"timeszones,omitempty"`
+	Timezones         []string          `json:"timezones,omitempty"`
 	Borders           []string          `json:"borders,omitempty"`
 	NativeName        string            `json:"nativeName,omitempty"`
 	NumericCode       string            `json:"numericCode,omitempty"`
@@ -45,7 +45,7 @@ type Language struct {
 
 // RegionalBloc contains the data of a country's regional bloc.
 type RegionalBloc struct {
-	Acronyn       string   `json:"acronym"`
+	Acronym       string   `json:"acronym"`
 	Name          string   `json:"name"`
 	OtherAcronyms []string `json:"otherAcronyms"`
 	OtherNames    []string `json:"otherNames"`
