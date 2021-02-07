@@ -1,0 +1,23 @@
+[{
+    "name": "Colombia",
+    "alpha3Code": "COL",
+    "capital": "Bogotá",
+    "region": "Americas",
+    "subregion": "South America",
+    "population": 48759958,
+    "demonym": "Colombian",
+    "area": 1141748.0,
+    "nativeName": "Colombia",
+    "currencies": [{
+        "code": "COP",
+        "name": "Colombian peso",
+        "symbol": "$"
+    }],
+    "languages": [{
+        "iso639_1": "es",
+        "iso639_2": "spa",
+        "name": "Spanish",
+        "nativeName": "Español"
+    }],
+    "flag": "https://restcountries.eu/data/col.svg"
+}]
