@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/georgesafta/countries/workflows/build/badge.svg)](https://github.com/georgesafta/countries/actions)
+[![Actions Status](https://github.com/georgesafta/countries/workflows/build/badge.svg)](https://github.com/georgesafta/countries/actions/Go)
 
 # countries
 Golang wrapper over the Countries API
