@@ -447,6 +447,40 @@ func TestByRegionalBlocFiltered(t *testing.T) {
 	}
 }
 
+func TestByCodes(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, fullMockPath, "/alpha?codes=col;no;ee")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.ByCodes([]string{"col", "no", "ee"})
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFullResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFullResponse, resp)
+	}
+}
+
+func TestByCodesFiltered(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, partialMockPath, "/alpha?codes=col;no;ee&fields=name;capital;currencies")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.ByCodes([]string{"col", "no", "ee"}, []string{"name", "capital", "currencies"}...)
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFilteredResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFilteredResponse, resp)
+	}
+}
+
 func TestUnmarshalError(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(handleMarshalError))
 	defer ts.Close()
