@@ -1,6 +1,7 @@
 package countries_test
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -242,6 +243,221 @@ func TestByCapitalFiltered(t *testing.T) {
 	}
 }
 
+func TestAll(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, fullMockPath, "/all")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.All()
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFullResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFullResponse, resp)
+	}
+}
+
+func TestAllFiltered(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, partialMockPath, "/all?fields=name;capital;currencies")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.All([]string{"name", "capital", "currencies"}...)
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFilteredResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFilteredResponse, resp)
+	}
+}
+
+func TestByCurrency(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, fullMockPath, "/currency/test")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.ByCurrency("test")
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFullResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFullResponse, resp)
+	}
+}
+
+func TestByCurrencyFiltered(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, partialMockPath, "/currency/test?fields=name;capital;currencies")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.ByCurrency("test", []string{"name", "capital", "currencies"}...)
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFilteredResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFilteredResponse, resp)
+	}
+}
+
+func TestByLanguage(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, fullMockPath, "/lang/test")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.ByLanguage("test")
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFullResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFullResponse, resp)
+	}
+}
+
+func TestByLanguageFiltered(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, partialMockPath, "/lang/test?fields=name;capital;currencies")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.ByLanguage("test", []string{"name", "capital", "currencies"}...)
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFilteredResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFilteredResponse, resp)
+	}
+}
+
+func TestByCallingCode(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, fullMockPath, "/callingcode/test")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.ByCallingCode("test")
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFullResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFullResponse, resp)
+	}
+}
+
+func TestByCallingCodeFiltered(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, partialMockPath, "/callingcode/test?fields=name;capital;currencies")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.ByCallingCode("test", []string{"name", "capital", "currencies"}...)
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFilteredResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFilteredResponse, resp)
+	}
+}
+
+func TestByRegion(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, fullMockPath, "/region/test")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.ByRegion("test")
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFullResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFullResponse, resp)
+	}
+}
+
+func TestByRegionFiltered(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, partialMockPath, "/region/test?fields=name;capital;currencies")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.ByRegion("test", []string{"name", "capital", "currencies"}...)
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFilteredResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFilteredResponse, resp)
+	}
+}
+
+func TestByRegionalBloc(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, fullMockPath, "/regionalbloc/test")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.ByRegionalBloc("test")
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFullResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFullResponse, resp)
+	}
+}
+
+func TestByRegionalBlocFiltered(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(checkedHandler(t, partialMockPath, "/regionalbloc/test?fields=name;capital;currencies")))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	resp, err := client.ByRegionalBloc("test", []string{"name", "capital", "currencies"}...)
+	if err != nil {
+		t.Fatal("Call unsuccessful")
+	}
+	if len(resp) != 1 {
+		t.Fatal("Response should have size 1")
+	}
+	if !reflect.DeepEqual(expectedFilteredResponse, resp) {
+		t.Fatalf("Response not matching, expected : %v, got : %v", expectedFilteredResponse, resp)
+	}
+}
+
+func TestUnmarshalError(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(handleMarshalError))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	_, err := client.ByRegionalBloc("test")
+	if err == nil || fmt.Sprintf("%T", err) != "*json.UnmarshalTypeError" {
+		t.Fatal("Expected unmarshaling error")
+	}
+}
+
 func checkedHandler(t *testing.T, filePath, expectedURL string) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
@@ -261,4 +477,8 @@ func checkedHandler(t *testing.T, filePath, expectedURL string) func(http.Respon
 			w.Write(data)
 		}
 	}
+}
+
+func handleMarshalError(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(`{"data":"unknown"}`))
 }
