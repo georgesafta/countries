@@ -481,6 +481,18 @@ func TestByCodesFiltered(t *testing.T) {
 	}
 }
 
+func TestByCodesEmptyInput(t *testing.T) {
+	client := countries.NewHTTPClient("localhost")
+	resp, err := client.ByCodes([]string{})
+
+	if err == nil || err.Error() != "Empty list of codes" {
+		t.Fatal("Expected input error")
+	}
+	if resp != nil {
+		t.Fatal("Expected nil response")
+	}
+}
+
 func TestUnmarshalError(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(handleMarshalError))
 	defer ts.Close()
@@ -489,6 +501,67 @@ func TestUnmarshalError(t *testing.T) {
 	_, err := client.ByRegionalBloc("test")
 	if err == nil || fmt.Sprintf("%T", err) != "*json.UnmarshalTypeError" {
 		t.Fatal("Expected unmarshaling error")
+	}
+}
+
+func TestBadRequest(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(handleBadCall))
+	defer ts.Close()
+
+	client := countries.NewHTTPClient(ts.URL)
+	_, err := client.ByCallingCode("test")
+	if err == nil || err.Error() != "Unexpected API status code 400 Bad Request" {
+		t.Fatal("Expected bad request response")
+	}
+
+	_, err = client.ByCapital("test")
+	if err == nil || err.Error() != "Unexpected API status code 400 Bad Request" {
+		t.Fatal("Expected bad request response")
+	}
+
+	_, err = client.ByCode("test")
+	if err == nil || err.Error() != "Unexpected API status code 400 Bad Request" {
+		t.Fatal("Expected bad request response")
+	}
+
+	_, err = client.ByCodes([]string{"test"})
+	if err == nil || err.Error() != "Unexpected API status code 400 Bad Request" {
+		t.Fatal("Expected bad request response")
+	}
+
+	_, err = client.ByCurrency("test")
+	if err == nil || err.Error() != "Unexpected API status code 400 Bad Request" {
+		t.Fatal("Expected bad request response")
+	}
+
+	_, err = client.ByFullName("test")
+	if err == nil || err.Error() != "Unexpected API status code 400 Bad Request" {
+		t.Fatal("Expected bad request response")
+	}
+
+	_, err = client.ByLanguage("test")
+	if err == nil || err.Error() != "Unexpected API status code 400 Bad Request" {
+		t.Fatal("Expected bad request response")
+	}
+
+	_, err = client.ByName("test")
+	if err == nil || err.Error() != "Unexpected API status code 400 Bad Request" {
+		t.Fatal("Expected bad request response")
+	}
+
+	_, err = client.ByRegion("test")
+	if err == nil || err.Error() != "Unexpected API status code 400 Bad Request" {
+		t.Fatal("Expected bad request response")
+	}
+
+	_, err = client.ByRegionalBloc("test")
+	if err == nil || err.Error() != "Unexpected API status code 400 Bad Request" {
+		t.Fatal("Expected bad request response")
+	}
+
+	_, err = client.All()
+	if err == nil || err.Error() != "Unexpected API status code 400 Bad Request" {
+		t.Fatal("Expected bad request response")
 	}
 }
 
@@ -515,4 +588,8 @@ func checkedHandler(t *testing.T, filePath, expectedURL string) func(http.Respon
 
 func handleMarshalError(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(`{"data":"unknown"}`))
+}
+
+func handleBadCall(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusBadRequest)
 }
